@@ -1,14 +1,16 @@
 import {
     FETCH_REPOS_SUCCESS,
     FETCH_REPOS_FAILURE,
-    FETCH_REPOS_REQUEST
+    FETCH_REPOS_REQUEST,
+    UPDATE_SELECTED_REPO
 } from './constants';
 
 const defaultState = {
     isLoading: false,
     isError: false,
     isDataLoaded: false,
-    data: []
+    data: [],
+    selectedRepoId: null
 };
 
 export default function repos(state = defaultState, action) {
@@ -19,6 +21,8 @@ export default function repos(state = defaultState, action) {
             return didFetchRepos(state, action);
         case FETCH_REPOS_FAILURE:
             return errorFetchingRepos(state);
+        case UPDATE_SELECTED_REPO:
+            return updateSelectedRepo(state, action);
         default:
             return state;
     }
@@ -46,5 +50,12 @@ function errorFetchingRepos(state) {
         ...state,
         isError: true,
         isLoading: false
+    }
+}
+
+function updateSelectedRepo(state, {id}) {
+    return {
+        ...state,
+        selectedRepoId: id
     }
 }
