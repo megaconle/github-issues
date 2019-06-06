@@ -7,10 +7,7 @@ import {
 const defaultState = {
     isLoading: false,
     isError: false,
-    isDataLoaded: false,
-    data: [],
-    sortBy: 'created',
-    sortDirection: 'desc'
+    data: {}
 };
 
 export default function issues(state = defaultState, action) {
@@ -33,15 +30,24 @@ function willFetchIssues(state) {
     }
 }
 
-function didFetchIssues(state, {data}) {
-    console.log(data)
-    return {
+function didFetchIssues(state, {issues, selectedRepoId}) {
+    console.log(issues)
+    const ret = {
         ...state,
         isLoading: false,
         isError: false,
-        isDataLoaded: true,
-        data
+        data: {
+            ...state.data,
+            [selectedRepoId]: {
+                issues,
+                isDataLoaded: true,
+                sortBy: 'created',
+                sortDirection: 'desc'
+            }
+        }
     }
+    console.log(ret);
+    return ret;
 }
 
 function errorFetchingIssues(state) {

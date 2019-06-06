@@ -13,6 +13,7 @@ import {
     getSelectedRepoById
 } from './selectors';
 
+// State updating actions
 export function fetchReposRequest() {
     return {
         type: FETCH_REPOS_REQUEST
@@ -39,6 +40,36 @@ export function updateAPIToken(apiToken) {
     }
 }
 
+export function updateSelectedRepository(repoId) {
+    return {
+        type: UPDATE_SELECTED_REPO,
+        id: repoId
+    }
+}
+
+export function fetchIssuesRequest() {
+    return {
+        type: FETCH_ISSUES_REQUEST
+    }
+}
+
+export function fetchIssuesSuccess({issues, selectedRepoId}) {
+    return {
+        type: FETCH_ISSUES_SUCCESS,
+        issues,
+        selectedRepoId
+    }
+}
+
+export function fetchIssuesFailure() {
+    return {
+        type: FETCH_ISSUES_FAILURE
+    }
+}
+
+
+// API calls
+
 export function fetchRepos() {
     return async (dispatch, getState) => {
         const {apiToken: {token}} = getState();
@@ -61,49 +92,20 @@ export function fetchRepos() {
     }
 }
 
-export function updateSelectedRepository(repoId) {
-    return {
-        type: UPDATE_SELECTED_REPO,
-        id: repoId
-    }
-}
-
-export function fetchIssuesRequest() {
-    return {
-        type: FETCH_ISSUES_REQUEST
-    }
-}
-
-export function fetchIssuesSuccess(data) {
-    return {
-        type: FETCH_ISSUES_SUCCESS,
-        data
-    }
-}
-
-export function fetchIssuesFailure() {
-    return {
-        type: FETCH_ISSUES_FAILURE
-    }
-}
-
-export function selectRepository(repoId) {
+export function fetchIssues() {
     return async (dispatch, getState) => {
-        dispatch(updateSelectedRepository(repoId));
-
         const {
             apiToken: {
                 token
             },
             repos: {
-                selectedRepoId,
-                data
+                selectedRepoId
             }
         } = getState();
 
         dispatch(fetchIssuesRequest());
 
-        const selectedRepo = getSelectedRepoById(data, selectedRepoId);
+        const selectedRepo = getSelectedRepoById(getState(), selectedRepoId);
 
         if (!selectedRepo) {
             // handle if we get here somehow - float to user as API error
@@ -120,9 +122,27 @@ export function selectRepository(repoId) {
                 }
             });
 
-            dispatch(fetchIssuesSuccess(response.data));
+            dispatch(fetchIssuesSuccess({issues: response.data, selectedRepoId}));
         } catch (error) {
             dispatch(fetchIssuesFailure());
         }        
+    }
+}
+
+export function selectRepository(repoId) {
+    return async (dispatch, getState) => {
+        dispatch(updateSelectedRepository(repoId));
+
+        const {
+            repos: {
+                selectedRepoId
+            },
+            issues
+        } = getState();
+
+        // if we already have fetched issues for this repo, don't fetch again
+        if (!(issues.data[selectedRepoId] && issues.data[selectedRepoId].isDataLoaded)) {
+            dispatch(fetchIssues());
+        }
     }
 }

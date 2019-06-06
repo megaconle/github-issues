@@ -1,5 +1,28 @@
+#root {
+  background-color: lightgray;
+}
+
 .App {
   text-align: center;
+  overflow: hidden;
+  height: 100vh;
+  max-height: 100vh;
+  width: 80%;
+  margin: auto;
+  background-color: white;
+}
+
+.header {
+  height: 80px;
+  background-color: #2a2a2a;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+}
+
+.header h1 {
+  margin: 0;
+  padding: 20px 0 0 20px;
 }
 
 .issue-viewer-container {
@@ -9,6 +32,8 @@
 
 .column {
   flex: 50%;
+  overflow: auto;
+  max-height: 600px;
 }
 
 .repository-button {
@@ -17,4 +42,31 @@
   height: 80px;
   padding: 20px;
   text-align: left;
+  font-size: large;
+}
+
+.active-repo {
+  background-color: azure;
+}
+
+.issue-row {
+  padding-left: 20px;
+  border-bottom: 2px solid gray;
+}
+
+.issue-header {
+  display: flex;
+  height: 40px;
+  padding-top: 20px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  padding-right: 20px;
+}
+
+.issue-header img {
+  width: 40px;
+  height: 40px;
 }

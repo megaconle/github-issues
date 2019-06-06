@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Column from '../Column';
 import RepositoryRow from '../RepositoryRow';
+import Issues from '../Issues';
 
 const IssueViewer = (props) => {
     return (
@@ -13,7 +14,7 @@ const IssueViewer = (props) => {
             </Column>
 
             <Column>
-                issues
+                <Issues />
             </Column>
         </div>
     )
