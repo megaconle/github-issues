@@ -1,57 +1,58 @@
 import axios from 'axios';
 import {
-	FETCH_REPOS_SUCCESS,
-	FETCH_REPOS_FAILURE,
-	FETCH_REPOS_REQUEST,
-	UPDATE_API_TOKEN
+    FETCH_REPOS_SUCCESS,
+    FETCH_REPOS_FAILURE,
+    FETCH_REPOS_REQUEST,
+    UPDATE_API_TOKEN
 } from './constants';
 
 export function fetchReposRequest() {
-	return {
-		type: FETCH_REPOS_REQUEST
-	};
+    return {
+        type: FETCH_REPOS_REQUEST
+    };
 }
 
 export function fetchReposSuccess(data) {
-	return {
-		type: FETCH_REPOS_SUCCESS,
-		data
-	};
+    return {
+        type: FETCH_REPOS_SUCCESS,
+        data
+    };
 }
 
 export function fetchReposFailure() {
-	return {
-		type: FETCH_REPOS_FAILURE
-	};
+    return {
+        type: FETCH_REPOS_FAILURE
+    };
 }
 
-export function updateAPIToken(token) {
-	return {
-		type: UPDATE_API_TOKEN,
-		token
-	}
+export function updateAPIToken(apiToken) {
+    return {
+        type: UPDATE_API_TOKEN,
+        apiToken
+    }
 }
 
 export function fetchRepos() {
-	return async (dispatch, getState) => {
-		const {token} = getState();
+    return async (dispatch, getState) => {
+        console.log(getState())
+        const {apiToken: {token}} = getState();
 
-		dispatch(fetchReposRequest());
+        dispatch(fetchReposRequest());
 
-		const url = 'https://api.github.com/user/repos';
+        const url = 'https://api.github.com/user/repos';
 
-		try {
-			const data = await axios({
-				method: 'get',
-				url,
-				auth: {
-					token
-				}
-			});
+        try {
+            const response = await axios({
+                method: 'get',
+                url,
+                headers: {
+                    'Authorization': `token ${token}`
+                }
+            });
 
-			dispatch(fetchReposSuccess(data));
-		} catch (error) {
-			dispatch(fetchReposFailure());
-		}
-	}
+            dispatch(fetchReposSuccess(response.data));
+        } catch (error) {
+            dispatch(fetchReposFailure());
+        }
+    }
 }

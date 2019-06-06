@@ -1,30 +1,21 @@
 import React from 'react';
 import './App.css';
 import LandingPage from '../components/LandingPage';
-import {updateAPIToken, fetchRepos} from '../modules/actions';
 import { connect } from 'react-redux';
 
 function App(props) {
-  return (
-    <div className="App">
-      <LandingPage fetchRepos={fetchRepos} onChangeAPIToken={props.onChangeAPIToken} />
-
-      <pre>
-      	{	
-      		JSON.stringify(props)
-      	}
-      </pre>
-    </div>
+    const content = props.showLandingPage ? <LandingPage /> : null;
+    return (
+        <div className="App">
+            {content}
+        </div>
   );
 }
 
 const mapStateToProps = (state) => {
-	return state;
+    return {
+        showLandingPage: !state.repos.isDataLoaded
+    };
 }
 
-const mapDispatchToProps = dispatch => ({
- onChangeAPIToken: (e) => dispatch(updateAPIToken(e.target.value)),
- fetchRepos: dispatch(fetchRepos())
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps)(App);

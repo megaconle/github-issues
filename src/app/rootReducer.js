@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
-import reducer from '../modules';
+import { repos, apiToken } from '../modules';
 
 export default combineReducers({
-	reducer
+    repos,
+    apiToken
 });
