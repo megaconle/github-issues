@@ -34,17 +34,14 @@ export function updateAPIToken(apiToken) {
 
 export function fetchRepos() {
     return async (dispatch, getState) => {
-        console.log(getState())
         const {apiToken: {token}} = getState();
 
         dispatch(fetchReposRequest());
 
-        const url = 'https://api.github.com/user/repos';
-
         try {
             const response = await axios({
                 method: 'get',
-                url,
+                url: 'https://api.github.com/user/repos',
                 headers: {
                     'Authorization': `token ${token}`
                 }
