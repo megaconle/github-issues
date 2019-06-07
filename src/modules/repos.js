@@ -31,7 +31,8 @@ export default function repos(state = defaultState, action) {
 function willFetchRepos(state) {
     return {
         ...state,
-        isLoading: true
+        isLoading: true,
+        isError: false
     }
 }
 

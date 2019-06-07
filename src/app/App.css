@@ -39,6 +39,10 @@
   text-align: left;
 }
 
+.error {
+  color: red;
+}
+
 .column {
   flex: 50%;
   overflow: auto;

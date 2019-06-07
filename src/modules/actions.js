@@ -14,7 +14,9 @@ import {
     getSelectedRepoById
 } from './selectors';
 
-// State updating actions
+const DEFAULT_SORT = 'created,desc';
+
+// Actions to update state in reducer
 export function fetchReposRequest() {
     return {
         type: FETCH_REPOS_REQUEST
@@ -80,6 +82,10 @@ export function updateSortOrder({selectedRepoId, sortString}) {
 
 // API calls
 
+/**
+ * Fetch repositories
+ * @return {function} thunk
+ */
 export function fetchRepos() {
     return async (dispatch, getState) => {
         const {apiToken: {token}} = getState();
@@ -102,7 +108,12 @@ export function fetchRepos() {
     }
 }
 
-export function fetchIssues(sortString = 'created,desc') {
+/**
+ * Fetch issues for selected repository
+ * @param {str} payload: user selected sort order
+ * @return {function} thunk
+ */
+export function fetchIssues(sortString) {
     return async (dispatch, getState) => {
         const {
             apiToken: {
@@ -145,8 +156,14 @@ export function fetchIssues(sortString = 'created,desc') {
     }
 }
 
+/**
+ * Update selected repository in state and fetch issues if needed
+ * Pull sort order from cache or use default
+ * @param {object} payload: user selected repository id
+ * @return {function} thunk
+ */
 export function selectRepository(repoId) {
-    return async (dispatch, getState) => {
+    return (dispatch, getState) => {
         dispatch(updateSelectedRepository(repoId));
 
         const {
@@ -160,19 +177,27 @@ export function selectRepository(repoId) {
 
         // if we already have fetched issues for this repo, don't fetch again
         if (!(data[selectedRepoId] && data[selectedRepoId].isDataLoaded)) {
-            dispatch(fetchIssues());
+            const sortOrderCache = window.sessionStorage.getItem(selectedRepoId) || DEFAULT_SORT;
+            dispatch(fetchIssues(sortOrderCache));
         }
     }
 }
 
+/**
+ * Update sort order in state and refetch issues
+ * Store sort order in session storage
+ * @param {object} payload: user selected sort order
+ * @return {function} thunk
+ */
 export function sortIssues({sortString}) {
-    return async (dispatch, getState) => {
+    return (dispatch, getState) => {
         const {
             repos: {
                 selectedRepoId
             }
         } = getState();
 
+        window.sessionStorage.setItem(selectedRepoId, sortString);
         dispatch(updateSortOrder({selectedRepoId, sortString}));
 
         const {issues} = getState();
