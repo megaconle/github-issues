@@ -4,7 +4,7 @@ import Column from '../Column';
 import RepositoryRow from '../RepositoryRow';
 import Issues from '../Issues';
 
-const IssueViewer = (props) => {
+export const IssueViewer = (props) => {
     return (
         <div className='issue-viewer-container'>
             <Column>
@@ -20,7 +20,7 @@ const IssueViewer = (props) => {
     )
 }
 
-const mapStateToProps = (state) => ({
+export const mapStateToProps = (state) => ({
     repositories: state.repos.data
 });
 

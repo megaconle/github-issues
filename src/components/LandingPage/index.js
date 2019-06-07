@@ -3,7 +3,7 @@ import Spinner from '../../components/shared/Spinner';
 import {updateAPIToken, fetchRepos} from '../../modules/actions';
 import { connect } from 'react-redux';
 
-const LandingPage = ({onChangeAPIToken, fetchRepos, isLoadingRepos, isErrorLoadingRepos}) => {
+export const LandingPage = ({onChangeAPIToken, fetchRepos, isLoadingRepos, isErrorLoadingRepos}) => {
     return (
         <div className='token-input-container'>
             <p>Enter your github API token:</p>
@@ -15,7 +15,7 @@ const LandingPage = ({onChangeAPIToken, fetchRepos, isLoadingRepos, isErrorLoadi
     )
 }
 
-const mapStateToProps = (state) => ({
+export const mapStateToProps = (state) => ({
     isLoadingRepos: state.repos.isLoading,
     isErrorLoadingRepos: state.repos.isError
 });

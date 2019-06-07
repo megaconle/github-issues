@@ -113,7 +113,7 @@ export function fetchRepos() {
  * @param {str} payload: user selected sort order
  * @return {function} thunk
  */
-export function fetchIssues(sortString) {
+export function fetchIssues(sortString = 'created,desc') {
     return async (dispatch, getState) => {
         const {
             apiToken: {
