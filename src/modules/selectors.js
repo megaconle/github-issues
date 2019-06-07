@@ -19,7 +19,6 @@ export function getSelectedRepoById(state, id) {
  * @return {array} Issues that belong to the repository
  */
 export function getIssuesForRepoId(state, id) {
-    console.log(state, id)
     return state.issues.data[id] ? state.issues.data[id].issues : [];
 }
 
