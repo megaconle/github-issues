@@ -1,7 +1,8 @@
 import {
     FETCH_ISSUES_SUCCESS,
     FETCH_ISSUES_FAILURE,
-    FETCH_ISSUES_REQUEST
+    FETCH_ISSUES_REQUEST,
+    UPDATE_SORT_ORDER
 } from './constants';
 
 const defaultState = {
@@ -18,6 +19,8 @@ export default function issues(state = defaultState, action) {
             return didFetchIssues(state, action);
         case FETCH_ISSUES_FAILURE:
             return errorFetchingIssues(state);
+        case UPDATE_SORT_ORDER:
+            return updateSortOrder(state, action);
         default:
             return state;
     }
@@ -30,9 +33,8 @@ function willFetchIssues(state) {
     }
 }
 
-function didFetchIssues(state, {issues, selectedRepoId}) {
-    console.log(issues)
-    const ret = {
+function didFetchIssues(state, {issues, selectedRepoId, sort}) {
+    return {
         ...state,
         isLoading: false,
         isError: false,
@@ -41,13 +43,10 @@ function didFetchIssues(state, {issues, selectedRepoId}) {
             [selectedRepoId]: {
                 issues,
                 isDataLoaded: true,
-                sortBy: 'created',
-                sortDirection: 'desc'
+                sort
             }
         }
     }
-    console.log(ret);
-    return ret;
 }
 
 function errorFetchingIssues(state) {
@@ -55,5 +54,18 @@ function errorFetchingIssues(state) {
         ...state,
         isError: true,
         isLoading: false
+    }
+}
+
+function updateSortOrder(state, {selectedRepoId, sort}) {
+    return {
+        ...state,
+        data: {
+            ...state.data,
+            [selectedRepoId]: {
+                ...state.data[selectedRepoId],
+                sort
+            }
+        }
     }
 }

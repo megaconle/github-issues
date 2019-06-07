@@ -9,7 +9,7 @@ const IssueViewer = (props) => {
         <div className='issue-viewer-container'>
             <Column>
                 {props.repositories.map((repository) => (
-                    <RepositoryRow repository={repository} />
+                    <RepositoryRow key={repository.id} repository={repository} />
                 ))}
             </Column>
 

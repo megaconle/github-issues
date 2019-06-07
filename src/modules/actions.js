@@ -7,7 +7,8 @@ import {
     FETCH_ISSUES_SUCCESS,
     FETCH_ISSUES_FAILURE,
     FETCH_ISSUES_REQUEST,
-    UPDATE_SELECTED_REPO
+    UPDATE_SELECTED_REPO,
+    UPDATE_SORT_ORDER
 } from './constants';
 import {
     getSelectedRepoById
@@ -53,17 +54,26 @@ export function fetchIssuesRequest() {
     }
 }
 
-export function fetchIssuesSuccess({issues, selectedRepoId}) {
+export function fetchIssuesSuccess({issues, selectedRepoId, sort}) {
     return {
         type: FETCH_ISSUES_SUCCESS,
         issues,
-        selectedRepoId
+        selectedRepoId,
+        sort
     }
 }
 
 export function fetchIssuesFailure() {
     return {
         type: FETCH_ISSUES_FAILURE
+    }
+}
+
+export function updateSortOrder({selectedRepoId, sortString}) {
+    return {
+        type: UPDATE_SORT_ORDER,
+        selectedRepoId,
+        sort: sortString
     }
 }
 
@@ -92,7 +102,7 @@ export function fetchRepos() {
     }
 }
 
-export function fetchIssues() {
+export function fetchIssues(sortString = 'created,desc') {
     return async (dispatch, getState) => {
         const {
             apiToken: {
@@ -113,16 +123,22 @@ export function fetchIssues() {
             dispatch(fetchIssuesFailure())
         }
 
+        const [sort, direction] = sortString.split(',');
+
         try {
             const response = await axios({
                 method: 'get',
                 url: `https://api.github.com/repos/${selectedRepo.owner.login}/${selectedRepo.name}/issues`,
                 headers: {
                     'Authorization': `token ${token}`
+                },
+                params: {
+                    sort,
+                    direction
                 }
             });
 
-            dispatch(fetchIssuesSuccess({issues: response.data, selectedRepoId}));
+            dispatch(fetchIssuesSuccess({issues: response.data, selectedRepoId, sort: sortString}));
         } catch (error) {
             dispatch(fetchIssuesFailure());
         }        
@@ -137,12 +153,30 @@ export function selectRepository(repoId) {
             repos: {
                 selectedRepoId
             },
-            issues
+            issues: {
+                data
+            }
         } = getState();
 
         // if we already have fetched issues for this repo, don't fetch again
-        if (!(issues.data[selectedRepoId] && issues.data[selectedRepoId].isDataLoaded)) {
+        if (!(data[selectedRepoId] && data[selectedRepoId].isDataLoaded)) {
             dispatch(fetchIssues());
         }
+    }
+}
+
+export function sortIssues({sortString}) {
+    return async (dispatch, getState) => {
+        const {
+            repos: {
+                selectedRepoId
+            }
+        } = getState();
+
+        dispatch(updateSortOrder({selectedRepoId, sortString}));
+
+        const {issues} = getState();
+
+        dispatch(fetchIssues(issues.data[selectedRepoId].sort));
     }
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import IssueHeader from './IssueHeader';
-import {getDateFromString, timeSince} from '../../modules/selectors'
+import {getDateFromString, timeSince} from '../../modules/utils';
 
 const IssueRow = ({issue}) => {
     return (

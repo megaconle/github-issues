@@ -13,7 +13,7 @@ const RepositoryRow = ({repository, isActiveRepo, selectRepository}) => {
 	);
 
     return (
-    	<div key={repository.id} className='repository-row'>
+    	<div className='repository-row'>
 	        <button onClick={() => selectRepository(repository.id)} className={buttonClass}>
 	            {repository.name}
 	        </button>
